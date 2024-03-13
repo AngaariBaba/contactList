@@ -27,6 +27,17 @@ db.serialize(() => {
       )
     `);
   });
+
+
+  db.serialize(() => {
+    db.run(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT,
+        password TEXT
+      )
+    `);
+  });
   
 
 // Get all contacts (with pagination)
@@ -78,6 +89,39 @@ app.get('/api/contacts/:id', (req, res) => {
   });
 });
 
+
+
+app.post('/api/signup', (req, res) => {
+    const { username, password } = req.body;
+    console.log("entered");
+  
+    // Check if the username already exists
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, existingUser) => {
+      if (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+  
+      if (existingUser) {
+        // Username already exists
+        res.status(400).json({ error: 'Username already taken' });
+        return;
+      }
+  
+      // Create a new user
+      const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+      db.run(query, [username, password], function (err) {
+        if (err) {
+          console.error(err.message);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+  
+        res.json({ id: this.lastID, username });
+      });
+    });
+  });
 // Add a new contact
 app.post('/api/contacts', (req, res) => {
     const { firstName, middleName, lastName, email, phone1, phone2, address } = req.body;
@@ -180,26 +224,26 @@ app.get('/api/search', (req, res) => {
   
 
 
-  const users = [
-    { id: 1, username: 'demo', password: 'password' },
-    // Add more users as needed
-  ];
-  
-  // Login endpoint
   app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
-    console.log(username,password);
   
-    // Find user in the database
-    const user = users.find((user) => user.username === username && user.password === password);
+    // Check if the username and password match a user in the database
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    db.get(query, [username, password], (err, user) => {
+      if (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
   
-    if (user) {
-      // User found, send a success response
-      res.json({ success: true, message: 'Login successful', redirect: '/' });
-    } else {
-      // User not found, send an error response
-      res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
+      if (user) {
+        // User found, send a success response
+        res.json({ success: true, message: 'Login successful', redirect: '/' });
+      } else {
+        // User not found or incorrect password, send an error response
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+    });
   });
   
 

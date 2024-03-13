@@ -109,7 +109,7 @@ const handleCancelEdit = () => {
   return (
     <div className="container">
       <h1 className="header">Contact List</h1>
-
+       
       <div className="search-container">
         <input
           className="search-input"
