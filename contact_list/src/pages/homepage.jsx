@@ -26,7 +26,7 @@ const handleEditClick = (contact) => {
 
 const handleEditFormSubmit = async () => {
    try {
-      await axios.put(`http://localhost:3001/api/contacts/${editingContact.id}`, editingContact);
+      await axios.put(`https://contactlist-1.onrender.com/${editingContact.id}`, editingContact);
       setEditingContact(null);
       // Fetch all contacts after editing a contact
       fetchAllContacts();
@@ -46,7 +46,7 @@ const handleCancelEdit = () => {
 
   const fetchAllContacts = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/contacts');
+      const response = await axios.get('https://contactlist-1.onrender.com/api/contacts');
       setContacts(response.data);
       console.log("received ->" + response.data);
     } catch (error) {
@@ -56,7 +56,7 @@ const handleCancelEdit = () => {
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/search?query=${searchQuery}`);
+      const response = await axios.get(`https://contactlist-1.onrender.com/api/search?query=${searchQuery}`);
       setContacts(response.data);
       console.log("received ->" + response.data);
     } catch (error) {
@@ -78,7 +78,7 @@ const handleCancelEdit = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:3001/api/contacts', newContact);
+      await axios.post('https://contactlist-1.onrender.com/api/contacts', newContact);
       setShowAddForm(false);
       setNewContact({
         firstName: '',
@@ -98,7 +98,7 @@ const handleCancelEdit = () => {
 
   const handleDeleteContact = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/contacts/${id}`);
+      await axios.delete(`https://contactlist-1.onrender.com/api/contacts/${id}`);
       // Fetch all contacts after deleting a contact
       fetchAllContacts();
     } catch (error) {
