@@ -26,7 +26,7 @@ const handleEditClick = (contact) => {
 
 const handleEditFormSubmit = async () => {
    try {
-      await axios.put(`https://contactlist-1.onrender.com/${editingContact.id}`, editingContact);
+      await axios.put(`https://contactlist-1.onrender.com/contacts/${editingContact.id}`, editingContact);
       setEditingContact(null);
       // Fetch all contacts after editing a contact
       fetchAllContacts();
