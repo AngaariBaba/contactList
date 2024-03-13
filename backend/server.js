@@ -144,6 +144,7 @@ app.post('/api/contacts', (req, res) => {
 
 // Update an existing contact
 app.put('/api/contacts/:id', (req, res) => {
+    console.log("updating")
     const { id } = req.params;
     const { firstName, middleName, lastName, email, phone1, phone2, address } = req.body;
   
